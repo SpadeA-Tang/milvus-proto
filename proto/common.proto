@@ -325,6 +325,9 @@ enum MsgType {
 
     /* WAL group */
     AlterWAL = 2000;
+
+    /* Phrase match */
+    ComputePhraseMatchSlop = 2100;
 }
 
 message MsgBase {
