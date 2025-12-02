@@ -1738,6 +1738,31 @@ class MilvusClient:
             timeout=timeout,
         )
 
+    def compute_phrase_match_slop(
+        self,
+        query_text: str,
+        data_text: List[str],
+        analyzer_params: Optional[Union[str, Dict]] = None,
+        timeout: Optional[float] = None,
+    ):
+        """Compute phrase match slop. Return is_match and slop for each data_text.
+
+        Args:
+            query_text(``str``): The query text.
+            data_text(``List[str]``): The data texts to match against.
+            analyzer_params(``str``,``Dict``,``None``): The parameters of analyzer.
+            timeout(``float``, optional): The timeout value in seconds. Defaults to None.
+
+        Returns:
+            (``Tuple[List[bool], List[int]]``): A tuple of (is_match, slop) lists.
+        """
+        return self._get_connection().compute_phrase_match_slop(
+            query_text,
+            data_text,
+            analyzer_params=analyzer_params,
+            timeout=timeout,
+        )
+
     def update_replicate_configuration(
         self,
         clusters: Optional[List[Dict]] = None,

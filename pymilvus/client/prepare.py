@@ -2368,6 +2368,26 @@ class Prepare:
         return req
 
     @classmethod
+    def compute_phrase_match_slop(
+        cls,
+        query_text: str,
+        data_text: List[str],
+        analyzer_params: Optional[Union[str, Dict]] = None,
+    ):
+        req = milvus_types.ComputePhraseMatchSlopRequest(
+            query_text=query_text,
+        )
+        req.data_text.extend(data_text)
+
+        if analyzer_params is not None:
+            if isinstance(analyzer_params, dict):
+                req.analyzer_params = orjson.dumps(analyzer_params).decode(Config.EncodeProtocol)
+            else:
+                req.analyzer_params = analyzer_params
+
+        return req
+
+    @classmethod
     def update_replicate_configuration_request(
         cls,
         clusters: Optional[List[Dict]] = None,

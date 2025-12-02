@@ -2708,3 +2708,25 @@ class ReplicateResponse(_message.Message):
     REPLICATE_CONFIRMED_MESSAGE_INFO_FIELD_NUMBER: _ClassVar[int]
     replicate_confirmed_message_info: ReplicateConfirmedMessageInfo
     def __init__(self, replicate_confirmed_message_info: _Optional[_Union[ReplicateConfirmedMessageInfo, _Mapping]] = ...) -> None: ...
+
+class ComputePhraseMatchSlopRequest(_message.Message):
+    __slots__ = ("base", "analyzer_params", "query_text", "data_text")
+    BASE_FIELD_NUMBER: _ClassVar[int]
+    ANALYZER_PARAMS_FIELD_NUMBER: _ClassVar[int]
+    QUERY_TEXT_FIELD_NUMBER: _ClassVar[int]
+    DATA_TEXT_FIELD_NUMBER: _ClassVar[int]
+    base: _common_pb2.MsgBase
+    analyzer_params: str
+    query_text: str
+    data_text: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, base: _Optional[_Union[_common_pb2.MsgBase, _Mapping]] = ..., analyzer_params: _Optional[str] = ..., query_text: _Optional[str] = ..., data_text: _Optional[_Iterable[str]] = ...) -> None: ...
+
+class ComputePhraseMatchSlopResponse(_message.Message):
+    __slots__ = ("status", "is_match", "slop")
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    IS_MATCH_FIELD_NUMBER: _ClassVar[int]
+    SLOP_FIELD_NUMBER: _ClassVar[int]
+    status: _common_pb2.Status
+    is_match: _containers.RepeatedScalarFieldContainer[bool]
+    slop: _containers.RepeatedScalarFieldContainer[int]
+    def __init__(self, status: _Optional[_Union[_common_pb2.Status, _Mapping]] = ..., is_match: _Optional[_Iterable[bool]] = ..., slop: _Optional[_Iterable[int]] = ...) -> None: ...

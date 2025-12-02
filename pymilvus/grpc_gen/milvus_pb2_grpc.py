@@ -601,6 +601,11 @@ class MilvusServiceStub(object):
                 request_serializer=milvus__pb2.ReplicateRequest.SerializeToString,
                 response_deserializer=milvus__pb2.ReplicateResponse.FromString,
                 )
+        self.ComputePhraseMatchSlop = channel.unary_unary(
+                '/milvus.proto.milvus.MilvusService/ComputePhraseMatchSlop',
+                request_serializer=milvus__pb2.ComputePhraseMatchSlopRequest.SerializeToString,
+                response_deserializer=milvus__pb2.ComputePhraseMatchSlopResponse.FromString,
+                )
 
 
 class MilvusServiceServicer(object):
@@ -1314,6 +1319,12 @@ class MilvusServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ComputePhraseMatchSlop(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MilvusServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1881,6 +1892,11 @@ def add_MilvusServiceServicer_to_server(servicer, server):
                     servicer.CreateReplicateStream,
                     request_deserializer=milvus__pb2.ReplicateRequest.FromString,
                     response_serializer=milvus__pb2.ReplicateResponse.SerializeToString,
+            ),
+            'ComputePhraseMatchSlop': grpc.unary_unary_rpc_method_handler(
+                    servicer.ComputePhraseMatchSlop,
+                    request_deserializer=milvus__pb2.ComputePhraseMatchSlopRequest.FromString,
+                    response_serializer=milvus__pb2.ComputePhraseMatchSlopResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -4934,6 +4950,33 @@ class MilvusService(object):
             '/milvus.proto.milvus.MilvusService/CreateReplicateStream',
             milvus__pb2.ReplicateRequest.SerializeToString,
             milvus__pb2.ReplicateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            )
+
+    @staticmethod
+    def ComputePhraseMatchSlop(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/milvus.proto.milvus.MilvusService/ComputePhraseMatchSlop',
+            milvus__pb2.ComputePhraseMatchSlopRequest.SerializeToString,
+            milvus__pb2.ComputePhraseMatchSlopResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -2024,3 +2024,22 @@ class AsyncGrpcHandler:
         if isinstance(texts, str):
             return AnalyzeResult(resp.results[0], with_hash, with_detail)
         return [AnalyzeResult(result, with_hash, with_detail) for result in resp.results]
+
+    async def compute_phrase_match_slop(
+        self,
+        query_text: str,
+        data_text: List[str],
+        analyzer_params: Optional[Union[str, Dict]] = None,
+        timeout: Optional[float] = None,
+        **kwargs,
+    ):
+        req = Prepare.compute_phrase_match_slop(
+            query_text,
+            data_text,
+            analyzer_params=analyzer_params,
+        )
+        resp = await self._async_stub.ComputePhraseMatchSlop(
+            req, timeout=timeout, metadata=_api_level_md(**kwargs)
+        )
+        check_status(resp.status)
+        return list(resp.is_match), list(resp.slop)

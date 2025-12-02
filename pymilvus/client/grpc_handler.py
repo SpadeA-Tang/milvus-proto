@@ -2498,6 +2498,25 @@ class GrpcHandler:
         return [AnalyzeResult(result, with_hash, with_detail) for result in resp.results]
 
     @retry_on_rpc_failure()
+    def compute_phrase_match_slop(
+        self,
+        query_text: str,
+        data_text: List[str],
+        analyzer_params: Optional[Union[str, Dict]] = None,
+        timeout: Optional[float] = None,
+        **kwargs,
+    ):
+        check_pass_param(timeout=timeout)
+        req = Prepare.compute_phrase_match_slop(
+            query_text,
+            data_text,
+            analyzer_params=analyzer_params,
+        )
+        resp = self._stub.ComputePhraseMatchSlop(req, timeout=timeout, metadata=_api_level_md(**kwargs))
+        check_status(resp.status)
+        return list(resp.is_match), list(resp.slop)
+
+    @retry_on_rpc_failure()
     def update_replicate_configuration(
         self,
         clusters: Optional[List[Dict]] = None,
