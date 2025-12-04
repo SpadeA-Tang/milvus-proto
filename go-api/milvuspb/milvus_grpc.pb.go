@@ -51,6 +51,7 @@ const (
 	MilvusService_DescribeAlias_FullMethodName                = "/milvus.proto.milvus.MilvusService/DescribeAlias"
 	MilvusService_ListAliases_FullMethodName                  = "/milvus.proto.milvus.MilvusService/ListAliases"
 	MilvusService_CreateIndex_FullMethodName                  = "/milvus.proto.milvus.MilvusService/CreateIndex"
+	MilvusService_CreateNestedIndex_FullMethodName            = "/milvus.proto.milvus.MilvusService/CreateNestedIndex"
 	MilvusService_AlterIndex_FullMethodName                   = "/milvus.proto.milvus.MilvusService/AlterIndex"
 	MilvusService_DescribeIndex_FullMethodName                = "/milvus.proto.milvus.MilvusService/DescribeIndex"
 	MilvusService_GetIndexStatistics_FullMethodName           = "/milvus.proto.milvus.MilvusService/GetIndexStatistics"
@@ -179,6 +180,7 @@ type MilvusServiceClient interface {
 	DescribeAlias(ctx context.Context, in *DescribeAliasRequest, opts ...grpc.CallOption) (*DescribeAliasResponse, error)
 	ListAliases(ctx context.Context, in *ListAliasesRequest, opts ...grpc.CallOption) (*ListAliasesResponse, error)
 	CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
+	CreateNestedIndex(ctx context.Context, in *CreateNestedIndexRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	AlterIndex(ctx context.Context, in *AlterIndexRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	DescribeIndex(ctx context.Context, in *DescribeIndexRequest, opts ...grpc.CallOption) (*DescribeIndexResponse, error)
 	GetIndexStatistics(ctx context.Context, in *GetIndexStatisticsRequest, opts ...grpc.CallOption) (*GetIndexStatisticsResponse, error)
@@ -576,6 +578,15 @@ func (c *milvusServiceClient) ListAliases(ctx context.Context, in *ListAliasesRe
 func (c *milvusServiceClient) CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*commonpb.Status, error) {
 	out := new(commonpb.Status)
 	err := c.cc.Invoke(ctx, MilvusService_CreateIndex_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *milvusServiceClient) CreateNestedIndex(ctx context.Context, in *CreateNestedIndexRequest, opts ...grpc.CallOption) (*commonpb.Status, error) {
+	out := new(commonpb.Status)
+	err := c.cc.Invoke(ctx, MilvusService_CreateNestedIndex_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1468,6 +1479,7 @@ type MilvusServiceServer interface {
 	DescribeAlias(context.Context, *DescribeAliasRequest) (*DescribeAliasResponse, error)
 	ListAliases(context.Context, *ListAliasesRequest) (*ListAliasesResponse, error)
 	CreateIndex(context.Context, *CreateIndexRequest) (*commonpb.Status, error)
+	CreateNestedIndex(context.Context, *CreateNestedIndexRequest) (*commonpb.Status, error)
 	AlterIndex(context.Context, *AlterIndexRequest) (*commonpb.Status, error)
 	DescribeIndex(context.Context, *DescribeIndexRequest) (*DescribeIndexResponse, error)
 	GetIndexStatistics(context.Context, *GetIndexStatisticsRequest) (*GetIndexStatisticsResponse, error)
@@ -1686,6 +1698,9 @@ func (UnimplementedMilvusServiceServer) ListAliases(context.Context, *ListAliase
 }
 func (UnimplementedMilvusServiceServer) CreateIndex(context.Context, *CreateIndexRequest) (*commonpb.Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateIndex not implemented")
+}
+func (UnimplementedMilvusServiceServer) CreateNestedIndex(context.Context, *CreateNestedIndexRequest) (*commonpb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNestedIndex not implemented")
 }
 func (UnimplementedMilvusServiceServer) AlterIndex(context.Context, *AlterIndexRequest) (*commonpb.Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AlterIndex not implemented")
@@ -2511,6 +2526,24 @@ func _MilvusService_CreateIndex_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MilvusServiceServer).CreateIndex(ctx, req.(*CreateIndexRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MilvusService_CreateNestedIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNestedIndexRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MilvusServiceServer).CreateNestedIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MilvusService_CreateNestedIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MilvusServiceServer).CreateNestedIndex(ctx, req.(*CreateNestedIndexRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4305,6 +4338,10 @@ var MilvusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateIndex",
 			Handler:    _MilvusService_CreateIndex_Handler,
+		},
+		{
+			MethodName: "CreateNestedIndex",
+			Handler:    _MilvusService_CreateNestedIndex_Handler,
 		},
 		{
 			MethodName: "AlterIndex",
