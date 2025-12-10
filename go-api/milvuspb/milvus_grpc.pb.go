@@ -144,6 +144,7 @@ const (
 	MilvusService_RestoreSnapshot_FullMethodName              = "/milvus.proto.milvus.MilvusService/RestoreSnapshot"
 	MilvusService_GetRestoreSnapshotState_FullMethodName      = "/milvus.proto.milvus.MilvusService/GetRestoreSnapshotState"
 	MilvusService_ListRestoreSnapshotJobs_FullMethodName      = "/milvus.proto.milvus.MilvusService/ListRestoreSnapshotJobs"
+	MilvusService_AlterCollectionSchema_FullMethodName        = "/milvus.proto.milvus.MilvusService/AlterCollectionSchema"
 )
 
 // MilvusServiceClient is the client API for MilvusService service.
@@ -164,7 +165,7 @@ type MilvusServiceClient interface {
 	AddCollectionFunction(ctx context.Context, in *AddCollectionFunctionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	AlterCollectionFunction(ctx context.Context, in *AlterCollectionFunctionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	DropCollectionFunction(ctx context.Context, in *DropCollectionFunctionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
-	TruncateCollection(ctx context.Context, in *TruncateCollectionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
+	TruncateCollection(ctx context.Context, in *TruncateCollectionRequest, opts ...grpc.CallOption) (*TruncateCollectionResponse, error)
 	CreatePartition(ctx context.Context, in *CreatePartitionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	DropPartition(ctx context.Context, in *DropPartitionRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	HasPartition(ctx context.Context, in *HasPartitionRequest, opts ...grpc.CallOption) (*BoolResponse, error)
@@ -304,6 +305,7 @@ type MilvusServiceClient interface {
 	RestoreSnapshot(ctx context.Context, in *RestoreSnapshotRequest, opts ...grpc.CallOption) (*RestoreSnapshotResponse, error)
 	GetRestoreSnapshotState(ctx context.Context, in *GetRestoreSnapshotStateRequest, opts ...grpc.CallOption) (*GetRestoreSnapshotStateResponse, error)
 	ListRestoreSnapshotJobs(ctx context.Context, in *ListRestoreSnapshotJobsRequest, opts ...grpc.CallOption) (*ListRestoreSnapshotJobsResponse, error)
+	AlterCollectionSchema(ctx context.Context, in *AlterCollectionSchemaRequest, opts ...grpc.CallOption) (*AlterCollectionSchemaResponse, error)
 }
 
 type milvusServiceClient struct {
@@ -440,8 +442,8 @@ func (c *milvusServiceClient) DropCollectionFunction(ctx context.Context, in *Dr
 	return out, nil
 }
 
-func (c *milvusServiceClient) TruncateCollection(ctx context.Context, in *TruncateCollectionRequest, opts ...grpc.CallOption) (*commonpb.Status, error) {
-	out := new(commonpb.Status)
+func (c *milvusServiceClient) TruncateCollection(ctx context.Context, in *TruncateCollectionRequest, opts ...grpc.CallOption) (*TruncateCollectionResponse, error) {
+	out := new(TruncateCollectionResponse)
 	err := c.cc.Invoke(ctx, MilvusService_TruncateCollection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1445,6 +1447,15 @@ func (c *milvusServiceClient) ListRestoreSnapshotJobs(ctx context.Context, in *L
 	return out, nil
 }
 
+func (c *milvusServiceClient) AlterCollectionSchema(ctx context.Context, in *AlterCollectionSchemaRequest, opts ...grpc.CallOption) (*AlterCollectionSchemaResponse, error) {
+	out := new(AlterCollectionSchemaResponse)
+	err := c.cc.Invoke(ctx, MilvusService_AlterCollectionSchema_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MilvusServiceServer is the server API for MilvusService service.
 // All implementations should embed UnimplementedMilvusServiceServer
 // for forward compatibility
@@ -1463,7 +1474,7 @@ type MilvusServiceServer interface {
 	AddCollectionFunction(context.Context, *AddCollectionFunctionRequest) (*commonpb.Status, error)
 	AlterCollectionFunction(context.Context, *AlterCollectionFunctionRequest) (*commonpb.Status, error)
 	DropCollectionFunction(context.Context, *DropCollectionFunctionRequest) (*commonpb.Status, error)
-	TruncateCollection(context.Context, *TruncateCollectionRequest) (*commonpb.Status, error)
+	TruncateCollection(context.Context, *TruncateCollectionRequest) (*TruncateCollectionResponse, error)
 	CreatePartition(context.Context, *CreatePartitionRequest) (*commonpb.Status, error)
 	DropPartition(context.Context, *DropPartitionRequest) (*commonpb.Status, error)
 	HasPartition(context.Context, *HasPartitionRequest) (*BoolResponse, error)
@@ -1603,6 +1614,7 @@ type MilvusServiceServer interface {
 	RestoreSnapshot(context.Context, *RestoreSnapshotRequest) (*RestoreSnapshotResponse, error)
 	GetRestoreSnapshotState(context.Context, *GetRestoreSnapshotStateRequest) (*GetRestoreSnapshotStateResponse, error)
 	ListRestoreSnapshotJobs(context.Context, *ListRestoreSnapshotJobsRequest) (*ListRestoreSnapshotJobsResponse, error)
+	AlterCollectionSchema(context.Context, *AlterCollectionSchemaRequest) (*AlterCollectionSchemaResponse, error)
 }
 
 // UnimplementedMilvusServiceServer should be embedded to have forward compatible implementations.
@@ -1651,7 +1663,7 @@ func (UnimplementedMilvusServiceServer) AlterCollectionFunction(context.Context,
 func (UnimplementedMilvusServiceServer) DropCollectionFunction(context.Context, *DropCollectionFunctionRequest) (*commonpb.Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DropCollectionFunction not implemented")
 }
-func (UnimplementedMilvusServiceServer) TruncateCollection(context.Context, *TruncateCollectionRequest) (*commonpb.Status, error) {
+func (UnimplementedMilvusServiceServer) TruncateCollection(context.Context, *TruncateCollectionRequest) (*TruncateCollectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TruncateCollection not implemented")
 }
 func (UnimplementedMilvusServiceServer) CreatePartition(context.Context, *CreatePartitionRequest) (*commonpb.Status, error) {
@@ -1977,6 +1989,9 @@ func (UnimplementedMilvusServiceServer) GetRestoreSnapshotState(context.Context,
 }
 func (UnimplementedMilvusServiceServer) ListRestoreSnapshotJobs(context.Context, *ListRestoreSnapshotJobsRequest) (*ListRestoreSnapshotJobsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListRestoreSnapshotJobs not implemented")
+}
+func (UnimplementedMilvusServiceServer) AlterCollectionSchema(context.Context, *AlterCollectionSchemaRequest) (*AlterCollectionSchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AlterCollectionSchema not implemented")
 }
 
 // UnsafeMilvusServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -4212,6 +4227,24 @@ func _MilvusService_ListRestoreSnapshotJobs_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MilvusService_AlterCollectionSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AlterCollectionSchemaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MilvusServiceServer).AlterCollectionSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MilvusService_AlterCollectionSchema_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MilvusServiceServer).AlterCollectionSchema(ctx, req.(*AlterCollectionSchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MilvusService_ServiceDesc is the grpc.ServiceDesc for MilvusService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4706,6 +4739,10 @@ var MilvusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListRestoreSnapshotJobs",
 			Handler:    _MilvusService_ListRestoreSnapshotJobs_Handler,
+		},
+		{
+			MethodName: "AlterCollectionSchema",
+			Handler:    _MilvusService_AlterCollectionSchema_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
